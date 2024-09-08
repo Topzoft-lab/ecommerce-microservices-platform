@@ -74,6 +74,20 @@ All services communicate asynchronously using RabbitMQ for event-driven architec
 ### Inventory Service
 - Listens to order events and updates product stock.
 
+## Database Choices
+
+The following table outlines the database choices for each microservice, along with the reasoning behind the selection:
+
+| **Service**              | **Database Choice**          | **Reason**                                                                 |
+|--------------------------|------------------------------|-----------------------------------------------------------------------------|
+| **User Service**          | **PostgreSQL**               | Relational data, ACID compliance, secure handling of user profiles          |
+| **Product Service**       | **PostgreSQL**               | Structured data, full-text search, relational integrity                     |
+| **Inventory Service**     | **PostgreSQL**               | Real-time stock updates, transaction-intensive operations                   |
+| **Order Service**         | **PostgreSQL**               | Transactional data, relational model, complex queries                       |
+| **Payment Service**       | **PostgreSQL**               | Sensitive financial data, strong consistency, transactional integrity       |
+| **Recommendation Service** (Optional) | **MongoDB** (Primary) / **Redis** (Cache) | Flexible document storage, high scalability, fast reads using Redis caching |
+
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

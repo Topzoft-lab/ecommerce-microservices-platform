@@ -135,7 +135,16 @@ The **User Service** is responsible for managing user registration, authenticati
    - The service integrates OAuth2 for Google and Facebook login. This reduces the need for users to create new credentials and uses a secure, industry-standard method of authentication.
 
 6. **Role-Based Access Control (RBAC)**:  
-   - Users can only access resources they own. This is enforced through role-based access controls that verify user permissions for e
+   - Users can only access resources they own. This is enforced through role-based access controls that verify user permissions for every request.
+
+7. **Redis for Session Management**:  
+   - Redis is used to store session data securely and reduce the load on PostgreSQL. This improves performance, especially when handling large volumes of user data.
+
+8. **Token Expiration and Blacklisting**:  
+   - JWT tokens are issued with an expiration time, and blacklisting is implemented during logout to ensure that users cannot reuse tokens after logging out.
+
+9. **Security Audits & Logging**:  
+   - Sensitive actions such as password changes and login attempts are logged for security audits and to help detect any malicious behavior.
 
 
 ## How to Run the Service

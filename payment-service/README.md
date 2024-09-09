@@ -10,7 +10,7 @@ The **Payment Service** is responsible for handling payment processing via third
 
 ## **Dependencies**
 
-- **Go**: 1.17+
+- **Java**: JDK 11+
 - **PostgreSQL**: Database for storing payment records
 - **RabbitMQ**: For communicating payment events with other services (e.g., Order Service)
 - **Stripe/PayPal API**: For processing payments

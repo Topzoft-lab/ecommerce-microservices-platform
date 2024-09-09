@@ -1,17 +1,32 @@
-# Use an official Java runtime as a parent image
-FROM openjdk:11-jdk-slim
+# Stage 1: Build the Go application
+FROM golang:1.18-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy go.mod and go.sum files
+COPY go.mod go.sum ./
 
-# Build the application
-RUN ./mvnw clean package
+# Download dependencies
+RUN go mod download
 
-# Expose the port the application will run on
-EXPOSE 8080
+# Copy the entire project into the container
+COPY . .
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "target/order-service.jar"]
+# Build the application binary
+RUN go build -o order-service .
+
+# Stage 2: Run the Go application in a lightweight image
+FROM alpine:latest
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the binary from the builder stage
+COPY --from=builder /app/order-service .
+
+# Expose the port the service will run on
+EXPOSE 8084
+
+# Command to run the service
+ENTRYPOINT ["./order-service"]

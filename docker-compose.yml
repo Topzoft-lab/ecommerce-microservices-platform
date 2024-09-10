@@ -1,0 +1,95 @@
+version: '3'
+services:
+  # api-gateway:
+  #   build: ./api-gateway
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - user-service
+  #     - product-service
+  #     - order-service
+  #     - payment-service
+
+  user-service:
+    build: ./user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/users_db
+    depends_on:
+      - user-db
+
+  # product-service:
+  #   build: ./product-service
+  #   ports:
+  #     - "8082:8082"
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://product-db:5432/products_db
+  #   depends_on:
+  #     - product-db
+
+  # order-service:
+  #   build: ./order-service
+  #   ports:
+  #     - "8083:8083"
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://order-db:5432/orders_db
+  #   depends_on:
+  #     - order-db
+
+  # payment-service:
+  #   build: ./payment-service
+  #   ports:
+  #     - "8084:8084"
+  #   environment:
+  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://payment-db:5432/payments_db
+  #   depends_on:
+  #     - payment-db
+
+  # Databases for each service
+  user-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+
+  product-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: products_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5433:5432"
+
+  order-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5434:5432"
+
+  payment-db:
+    image: postgres
+    environment:
+      POSTGRES_DB: payments_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5435:5432"
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"

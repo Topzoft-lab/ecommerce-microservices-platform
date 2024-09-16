@@ -10,7 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService  {
 
     @Autowired
     private UserRepository userRepository;
@@ -18,28 +18,44 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    public ResponseEntity<String> registerUser(RegistrationDTO registrationDTO) {
+    public User registerUser(RegistrationDTO registrationDTO) {
+
+        // Check if email is already in use
         if (userRepository.existsByEmail(registrationDTO.getEmail())) {
-            return ResponseEntity.badRequest().body("Email is already in use!");
+            throw new IllegalArgumentException("Email is already in use!");
         }
 
+        // Create a new User object from the DTO
         User user = new User();
         user.setName(registrationDTO.getName());
         user.setEmail(registrationDTO.getEmail());
         user.setPassword(passwordEncoder.encode(registrationDTO.getPassword())); // Hash the password
+        
+        // Set default role as CUSTOMER
+        user.setRole(registrationDTO.getRole());
 
-        userRepository.save(user);
-        return ResponseEntity.ok("User registered successfully!");
+        // Set optional fields like phone number and address if provided
+        if (registrationDTO.getPhoneNumber() != null) {
+            user.setPhoneNumber(registrationDTO.getPhoneNumber());
+        }
+        
+        if (registrationDTO.getAddress() != null) {
+            user.setAddress(registrationDTO.getAddress());
+        }
+
+        // Save the new user in the repository
+        return userRepository.save(user);
     }
 
-    public ResponseEntity<String> loginUser(LoginDTO loginDTO) {
-        // User user = userRepository.findByEmail(loginDTO.getEmail());
+    
+    public User loginUser(LoginDTO loginDTO) {
+        User user = userRepository.findByEmail(loginDTO.getEmail());
 
-        // if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
-        //     return ResponseEntity.badRequest().body("Invalid credentials!");
-        // }
+        if (user == null || !passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            throw new IllegalArgumentException("Invalid credentials!");
+        }
 
-        // // Normally, you would generate a JWT token here
-        return ResponseEntity.ok("User logged in successfully!");
+        return user;
     }
+
 }
